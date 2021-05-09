@@ -25,3 +25,6 @@ This repo contains a list of development VMs built and managed using the tool [V
    2. Halt the machine: `vagrant halt`
    3. Reload the machine: `vagrant reload`
    4. Destroy the machine: `vagrant destroy`
+
+# References
+https://www.howtoforge.com/setup-a-local-wordpress-development-environment-with-vagrant/
