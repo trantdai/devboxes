@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
     end
 
     # Sync files between current local folder and guest /vagrant folder:
-    config.vm.synced_folder ".", "/vagrant"
+    config.vm.synced_folder ".", "/vagrant", disabled: true
 
     # Provision guest with bootstrap.sh script; uses shell scripting:
     config.vm.provision "shell", path: "bootstrap.sh"
