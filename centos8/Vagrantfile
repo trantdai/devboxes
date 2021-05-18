@@ -6,17 +6,17 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-    # Define what box to use (CentOS 7):
-    config.vm.box = "centos/7"
+    # Define what box to use (CentOS 8):
+    config.vm.box = "centos/8"
 
     # Suppress error caused by ssl inspection
     config.vm.box_download_insecure = true
 
     # Define hostname (myhost); most useful for environments with multiple guests:
-    config.vm.hostname = "CENTOS7"
+    config.vm.hostname = "CENTOS8"
 
     # Configure private network IP address:
-    config.vm.network "private_network", ip: "10.0.0.10"
+    config.vm.network "private_network", ip: "10.0.0.30"
 
     # Sync files between current local folder and guest /vagrant folder:
     config.vm.synced_folder ".", "/vagrant"

@@ -42,3 +42,13 @@ usermod -aG docker vagrant
 systemctl start docker
 systemctl enable docker
 
+#ADD USERS AND GROUPS
+useradd -d /home/cyberauto cyberauto
+# useradd -m username -p password
+# Use shell script to modify /etc/sudoers as follows - test
+# Disable wheel: %wheel ALL=(ALL) ALL in /etc/sudoers
+# Add cyberauto user to /etc/sudoers to provide full sudo acess: cyberauto ALL=(ALL) ALL
+# Set requiring entering password after 5 mins: Defaults timestamp_timeout=5
+# Set password maybe from env var or edit file using shell script
+# Enable ssh
+
