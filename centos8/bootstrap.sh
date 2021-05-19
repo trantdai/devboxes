@@ -42,8 +42,13 @@ usermod -aG docker vagrant
 systemctl start docker
 systemctl enable docker
 
-#ADD USERS AND GROUPS
-useradd -d /home/cyberauto cyberauto
+#ADD USERS AND GROUPS AND ADD USER TO SUDOERS
+#https://stackoverflow.com/questions/19648088/pass-environment-variables-to-vagrant-shell-provisioner
+export PASSWORD=${PASSWORD}
+useradd -d /home/cyberauto cyberauto -p PASSWORD
+# https://stackoverflow.com/questions/323957/how-do-i-edit-etc-sudoers-from-a-script
+if [ -z "$(grep 'cyberauto    ALL=(ALL)       ALL' /etc/sudoers )" ]; then echo "cyberauto    ALL=(ALL)       ALL" | sudo EDITOR='tee -a' visudo; fi;
+
 # useradd -m username -p password
 # Use shell script to modify /etc/sudoers as follows - test
 # Disable wheel: %wheel ALL=(ALL) ALL in /etc/sudoers
@@ -52,3 +57,20 @@ useradd -d /home/cyberauto cyberauto
 # Set password maybe from env var or edit file using shell script
 # Enable ssh
 
+#EDIT SSH CONFIG
+#config.vm.provision "shell", inline: <<-SHELL
+#   sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+#   systemctl restart sshd.service
+#SHELL
+
+# SET UP PASSWORD BASED AUTHENTICATION
+cat /home/cyberauto/.passwd | passwd --stdin cyberauto
+
+#SSH KEY BASED AUTHENTICATION
+# https://stackoverflow.com/questions/22643177/ssh-onto-vagrant-box-with-different-username
+echo 'Setting up SSH key based authentication'
+#mkdir -p /home/cyberauto/.ssh
+chmod 700 /home/cyberauto/.ssh
+cat /home/cyberauto/pubkeys/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+chmod -R 600 /cyberauto/vagrant/.ssh/authorized_keys

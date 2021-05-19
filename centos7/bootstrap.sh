@@ -42,3 +42,15 @@ usermod -aG docker vagrant
 systemctl start docker
 systemctl enable docker
 
+#ADD USERS AND GROUPS AND ADD USER TO SUDOERS
+export PASSWORD=${PASSWORD}
+useradd -d /home/cyberauto cyberauto -p PASSWORD
+# https://stackoverflow.com/questions/323957/how-do-i-edit-etc-sudoers-from-a-script
+if [ -z "$(grep 'cyberauto    ALL=(ALL)       ALL' /etc/sudoers )" ]; then echo "cyberauto    ALL=(ALL)       ALL" | sudo EDITOR='tee -a' visudo; fi;
+
+#EDIT SSH CONFIG
+#config.vm.provision "shell", inline: <<-SHELL
+#   sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+#   systemctl restart sshd.service
+#SHELL
+

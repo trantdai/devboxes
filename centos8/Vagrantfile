@@ -22,13 +22,29 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder ".", "/vagrant"
 
     # Provision guest with bootstrap.sh script; uses shell scripting:
-    config.vm.provision "shell", path: "bootstrap.sh"
+    # https://www.vagrantup.com/docs/provisioning/basic_usage
+    #config.vm.provision "shell", path: "bootstrap.sh"
+    # https://stackoverflow.com/questions/19648088/pass-environment-variables-to-vagrant-shell-provisioner
+    config.vm.provision "shell" do |s|
+        s.env = {PASSWORD:ENV['TF_VAR_authcodes']}
+        s.path = 'bootstrap.sh'
+    end
 
     # Set guest options for VirtualBox, including memory (1024), and CPU (2):
     config.vm.provider "virtualbox" do |vb|
         vb.memory = "1024"
         vb.cpus = "2"
     end
+
+    # SET UP PASSWORD BASED AUTHENTICATION
+    config.vm.provision "file", source: "../.passwd", destination: "/home/cyberauto/.passwd"
+
+    # SET UP SSH KEY BASED AUTHENTICATION
+    # https://www.vagrantup.com/docs/provisioning/file
+    # Copy cyberauto keys to guest machine
+    config.vm.provision "file", source: "id_rsa", destination: "/home/cyberauto/.ssh/id_rsa"
+    config.vm.provision "file", source: "../pubkeys/id_rsa.pub", destination: "/home/cyberauto/pubkeys/id_rsa.pub"
+    config.vm.provision "file", source: "../pubkeys/dtran_id_rsa.pub", destination: "/home/cyberauto/pubkeys/dtran_id_rsa.pub"
 
     #https://github.com/dotless-de/vagrant-vbguest
     Vagrant::Config.run do |config|
