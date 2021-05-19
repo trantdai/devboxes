@@ -1,7 +1,10 @@
 #.vagrant file
 **/.vagrant/**
-**/.passwd/**
+
+#keys
 .passwd
+**/.passwd/**
+privkeys
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
