@@ -47,6 +47,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "../pubkeys/dtran_id_rsa.pub", destination: "/home/cyberauto/pubkeys/dtran_id_rsa.pub"
 
     #https://github.com/dotless-de/vagrant-vbguest
+    #https://www.vagrantup.com/docs/vagrantfile/version
     Vagrant::Config.run do |config|
         # we will try to autodetect this path.
         # However, if we cannot or you have a special one you may pass it like:
