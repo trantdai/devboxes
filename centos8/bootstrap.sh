@@ -44,8 +44,9 @@ systemctl enable docker
 
 #ADD USERS AND GROUPS AND ADD USER TO SUDOERS
 #https://stackoverflow.com/questions/19648088/pass-environment-variables-to-vagrant-shell-provisioner
-export PASSWORD=${PASSWORD}
-useradd -d /home/cyberauto cyberauto -p PASSWORD
+#export PASSWORD=${PASSWORD}
+#useradd -d /home/cyberauto cyberauto -p PASSWORD
+useradd -d /home/cyberauto cyberauto
 # https://stackoverflow.com/questions/323957/how-do-i-edit-etc-sudoers-from-a-script
 if [ -z "$(grep 'cyberauto    ALL=(ALL)       ALL' /etc/sudoers )" ]; then echo "cyberauto    ALL=(ALL)       ALL" | sudo EDITOR='tee -a' visudo; fi;
 
@@ -64,7 +65,8 @@ if [ -z "$(grep 'cyberauto    ALL=(ALL)       ALL' /etc/sudoers )" ]; then echo 
 #SHELL
 
 # SET UP PASSWORD BASED AUTHENTICATION
-cat /home/cyberauto/.passwd | passwd --stdin cyberauto
+# Set password provided in .passwd for cyberauto user
+cat /home/cyberauto/.passwd | sudo chpasswd
 
 #SSH KEY BASED AUTHENTICATION
 # https://stackoverflow.com/questions/22643177/ssh-onto-vagrant-box-with-different-username

@@ -19,12 +19,13 @@ This repo contains a list of development VMs built and managed using the tool [V
 3. Bring up a virtual machine: `vagrant up`
 3. SSH into the machine: `vagrant ssh`
 4. Log out of the machine SSH session: `vagrant@vagrant:~$ logout`
-5. Update the machine whenever `bootstrap.sh` is updated (similar to run `vagrant up` first time): `vagrant reload --provision`
+5. Update the machine whenever `bootstrap.sh` is updated (similar to run `vagrant up` first time): `vagrant reload --provision` or `vagrant --provision` or `vagrant provision`
 6. Teardown an environment:
    1. Suspend the machine: `vagrant suspend`
    2. Halt the machine: `vagrant halt`
    3. Reload the machine: `vagrant reload`
    4. Destroy the machine: `vagrant destroy`
+7. Debugging: `vagrant up --debug` or `vagrant up --debug 2>&1 | Tee-Object -FilePath ".\vagrant.log"`
 
 # References
 https://www.howtoforge.com/setup-a-local-wordpress-development-environment-with-vagrant/
