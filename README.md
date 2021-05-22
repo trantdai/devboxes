@@ -3,9 +3,22 @@
 - [Introduction to Vagrant Built Development VMs](#introduction-to-vagrant-built-development-vms)
 - [Set Up Guide](#set-up-guide)
 - [Usage Guide](#usage-guide)
+- [References](#References)
+
 # Introduction to Vagrant Built Development VMs
 
-This repo contains a list of development VMs built and managed using the tool [Vagrant](https://www.vagrantup.com/) developed by HashiCorp. Currently there are two VMs built in this repo: Cento 7 in `centos7` directory and Kali Linux in `kali` directory.
+This repo contains a list of development VMs built and managed using the tool [Vagrant](https://www.vagrantup.com/) developed by HashiCorp. Currently there are three VMs built in this repo: Cento 7 in `centos7` directory, Centos 8 in `centos8` and Kali Linux in `kali` directory.
+The following are provisioned/installed automatically during the VM boot process using the shell script `bootstrap.sh`:
+- Utils
+- Development tools
+- Python36 and Python libraries
+- Vim
+- Tree
+- Active Docker service
+- User `cyberauto` creation with password provided in `.passwd`
+- Enablement of SSH password authentication
+- Passwordless `sudo` setup for user `cyberauto`
+- Removal of the `sudo` right from the `wheel` group
 
 # Set Up Guide
 
@@ -15,17 +28,18 @@ This repo contains a list of development VMs built and managed using the tool [V
 
 # Usage Guide
 
-1. Change working directory to VM directory like `devboxes\centos7`: `cd devboxes\centos7`
+1. Change working directory to VM directory like `devboxes\centos8`: `cd devboxes\centos8`
+2. Create the `.passwd` file that contains the password for user `cyberauto`: `echo "<yourpassword>" > .passwd` 
 3. Bring up a virtual machine: `vagrant up`
-3. SSH into the machine: `vagrant ssh`
-4. Log out of the machine SSH session: `vagrant@vagrant:~$ logout`
-5. Update the machine whenever `bootstrap.sh` is updated (similar to run `vagrant up` first time): `vagrant reload --provision` or `vagrant --provision` or `vagrant provision`
-6. Teardown an environment:
+4. SSH into the machine: `vagrant ssh`
+5. Log out of the machine SSH session: `vagrant@vagrant:~$ logout`
+6. Update the machine whenever `bootstrap.sh` is updated (similar to run `vagrant up` first time): `vagrant reload --provision` or `vagrant --provision` or `vagrant provision`
+7. Teardown an environment:
    1. Suspend the machine: `vagrant suspend`
    2. Halt the machine: `vagrant halt`
    3. Reload the machine: `vagrant reload`
    4. Destroy the machine: `vagrant destroy`
-7. Debugging: `vagrant up --debug` or `vagrant up --debug 2>&1 | Tee-Object -FilePath ".\vagrant.log"`
+8. Debugging: `vagrant up --debug` or `vagrant up --debug 2>&1 | Tee-Object -FilePath ".\vagrant.log"`
 
 # References
 https://www.howtoforge.com/setup-a-local-wordpress-development-environment-with-vagrant/
