@@ -24,7 +24,7 @@ if [ -z "$(grep 'cyberauto        ALL=(ALL)       NOPASSWD: ALL' /etc/sudoers )"
 #https://stackoverflow.com/questions/323957/how-do-i-edit-etc-sudoers-from-a-script
 #echo '# %wheel  ALL=(ALL)       ALL' | sudo EDITOR='tee -a' visudo
 #https://stackoverflow.com/questions/13626798/editing-the-sudo-file-in-a-shell-script
-sed -i 's/%wheel  ALL=(ALL)       ALL/# %wheel  ALL=(ALL)       ALL/g' /etc/sudoers
+sudo sed -i 's/%wheel  ALL=(ALL)       ALL/# %wheel  ALL=(ALL)       ALL/g' /etc/sudoers
 
 echo "ENABLING SSH PASSWORD AUTHENTICATION..."
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
