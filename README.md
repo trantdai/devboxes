@@ -15,6 +15,7 @@ The following are provisioned/installed automatically during the VM boot process
 - Vim
 - Tree
 - Active Docker service
+- Replacement of the user vagrant's default password with password provided in `.passwd`
 - User `cyberauto` creation with password provided in `.passwd`
 - Enablement of SSH password authentication
 - Passwordless `sudo` setup for user `cyberauto`
