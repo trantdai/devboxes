@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
     config.vm.hostname = "CENTOS7"
 
     # Configure private network IP address:
-    config.vm.network "private_network", ip: "10.0.0.10"
+    config.vm.network "private_network", ip: "10.0.0.100"
 
     # Sync files between current local folder and guest /vagrant folder:
     config.vm.synced_folder ".", "/vagrant"

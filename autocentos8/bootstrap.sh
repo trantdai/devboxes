@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-
+echo ""
+echo "*** START OF BOOTSTRAPPING SHELL ***"
+echo ""
 echo "INSTALL UTILS AND DEVELOPMENT TOOLS..."
 #https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-local-programming-environment-on-centos-7
 yum -y update
@@ -15,6 +17,7 @@ python3.6 -m pip install 'pylint==2.6.0' 'coverage==5.2.1' 'twine==3.2.0' --trus
 python3.6 -m pip install 'paramiko==2.6.0' --trusted-host pypi.python.org
 yum install -y vim
 yum install -y tree
+yum install -y git
 
 #EXTRACT AND INSTALL CORPORATE CONTOSO ROOT CA TO AVOID FOLLOWING ERROR CAUSED BY SSL INSPECTION WHEN DOCKER LOGIN
 #Error response from daemon: Get https://registry-1.docker.io/v2/: x509: certificate signed by unknown authority
@@ -45,11 +48,14 @@ echo "ADDING USERS, GROUPS AND SET PASSWORDS..."
 # mv /vagrant/.passwd /home/cyberauto/.passwd
 #password="`head -1 /vagrant/.passwd`"
 password="`cat /vagrant/.passwd`"
-useradd -d /home/cyberauto cyberauto -p $password
+#useradd -d /home/cyberauto cyberauto -p $password
+#https://www.cyberciti.biz/faq/check-if-a-directory-exists-in-linux-or-unix-shell/
+#[ ! -d "/home/cyberauto cyberauto" ] && mkdir -p "/home/cyberauto cyberauto"
+if [ $(grep -c "^cyberauto:" /etc/passwd) -eq 0 ]; then useradd -d /home/cyberauto cyberauto -p $password; fi;
 #https://www.2daygeek.com/linux-passwd-chpasswd-command-set-update-change-users-password-in-linux-using-shell-script/
 #https://www.systutorials.com/changing-linux-users-password-in-one-command-line/
 echo $password | sudo passwd --stdin cyberauto
-#passwd --expire cyberauto
+echo $password | sudo passwd --stdin vagrant
 
  echo "ADDING USER TO SUDOERS AND DISABLE PASSWORD PROMT AND WHEEL GROUP..."
 # https://stackoverflow.com/questions/323957/how-do-i-edit-etc-sudoers-from-a-script
@@ -64,11 +70,26 @@ echo "ENABLING SSH PASSWORD AUTHENTICATION..."
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
 
-#SSH KEY BASED AUTHENTICATION
 # https://stackoverflow.com/questions/22643177/ssh-onto-vagrant-box-with-different-username
 echo 'SETTING UP SSH KEY BASED AUTHENTICATION...'
-#mkdir -p /home/cyberauto/.ssh
+mkdir -p /home/cyberauto/.ssh
+mv /tmp/id_rsa /home/cyberauto/.ssh
+mv /tmp/id_rsa.pub /home/cyberauto/.ssh
 chmod 700 /home/cyberauto/.ssh
-cat /home/cyberauto/pubkeys/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
-cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
-chmod -R 600 /cyberauto/vagrant/.ssh/authorized_keys
+
+mkdir -p /home/cyberauto/pubkeys
+mv /tmp/dtran_id_rsa.pub /home/cyberauto/pubkeys
+cat /home/cyberauto/.ssh/id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
+cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
+chmod -R 600 /home/cyberauto/.ssh/authorized_keys
+
+echo 'SETTING UP JENKINS USING DOCKER AND JENKINS CONFIGURATION AS CODE...'
+cd /home/cyberauto
+git clone https://github.com/trantdai/jenkins.git
+cd jenkins
+docker build -t jenkins:jcasc .
+docker run --name jenkins --rm -p 8080:8080 --env JENKINS_ADMIN_ID=admin --env JENKINS_ADMIN_PASSWORD=$password jenkins:jcasc &
+
+echo ""
+echo "*** END OF BOOTSTRAPPING SHELL ***"
+echo ""

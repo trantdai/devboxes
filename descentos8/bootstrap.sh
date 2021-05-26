@@ -2,7 +2,10 @@
 #SYNCHRONIZE LOCAL AND GUEST FILES
 #mount -t vboxsf -o uid=`id -u vagrant`,gid=`id -g vagrant` vagrant /vagrant
 
-#INSTALL PYTHON3 AND PIP3
+echo ""
+echo "*** START OF BOOTSTRAPPING SHELL ***"
+echo ""
+echo "INSTALL UTILS AND DEVELOPMENT TOOLS..."
 yum install -y vim
 
 echo "ADDING USERS, GROUPS AND SET PASSWORDS..."
@@ -10,7 +13,11 @@ echo "ADDING USERS, GROUPS AND SET PASSWORDS..."
 # mv /vagrant/.passwd /home/cyberauto/.passwd
 #password="`head -1 /vagrant/.passwd`"
 password="`cat /vagrant/.passwd`"
-useradd -d /home/cyberauto cyberauto -p $password
+#useradd -d /home/cyberauto cyberauto -p $password
+#https://www.cyberciti.biz/faq/check-if-a-directory-exists-in-linux-or-unix-shell/
+#[ ! -d "/home/cyberauto cyberauto" ] && mkdir -p "/home/cyberauto cyberauto"
+if [ $(grep -c "^cyberauto:" /etc/passwd) -eq 0 ]; then useradd -d /home/cyberauto cyberauto -p $password; fi;
+echo "END OF USER ADDITION..."
 #https://www.2daygeek.com/linux-passwd-chpasswd-command-set-update-change-users-password-in-linux-using-shell-script/
 #https://www.systutorials.com/changing-linux-users-password-in-one-command-line/
 echo $password | sudo passwd --stdin cyberauto
@@ -30,28 +37,19 @@ echo "ENABLING SSH PASSWORD AUTHENTICATION..."
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
 
-# useradd -m username -p password
-# Use shell script to modify /etc/sudoers as follows - test
-# Disable wheel: %wheel ALL=(ALL) ALL in /etc/sudoers
-# Add cyberauto user to /etc/sudoers to provide full sudo acess: cyberauto ALL=(ALL) ALL
-# Set requiring entering password after 5 mins: Defaults timestamp_timeout=5
-# Set password maybe from env var or edit file using shell script
-# Enable ssh
-
-#EDIT SSH CONFIG
-#config.vm.provision "shell", inline: <<-SHELL
-#   sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-#   systemctl restart sshd.service
-#SHELL
-
-# SET UP PASSWORD BASED AUTHENTICATION
-# Set password provided in .passwd for cyberauto user
-#cat /home/cyberauto/.passwd | sudo chpasswd
-
 # https://stackoverflow.com/questions/22643177/ssh-onto-vagrant-box-with-different-username
 echo 'SETTING UP SSH KEY BASED AUTHENTICATION...'
-#mkdir -p /home/cyberauto/.ssh
+mkdir -p /home/cyberauto/.ssh
+mv /tmp/id_rsa /home/cyberauto/.ssh
+mv /tmp/id_rsa.pub /home/cyberauto/.ssh
 chmod 700 /home/cyberauto/.ssh
-cat /home/cyberauto/pubkeys/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
-cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+
+mkdir -p /home/cyberauto/pubkeys
+mv /tmp/dtran_id_rsa.pub /home/cyberauto/pubkeys
+cat /home/cyberauto/.ssh/id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
+cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
 chmod -R 600 /home/cyberauto/.ssh/authorized_keys
+
+echo ""
+echo "*** END OF BOOTSTRAPPING SHELL ***"
+echo ""

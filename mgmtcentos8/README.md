@@ -1,0 +1,1 @@
+Management/jump lightweight virtual machine. No extra tools and software installed on this machine.
