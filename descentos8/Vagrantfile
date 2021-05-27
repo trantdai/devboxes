@@ -50,9 +50,9 @@ Vagrant.configure("2") do |config|
     # For error "mkdir: cannot create directory ‘/home/cyberauto’: Permission denied", see below:
     # https://stackoverflow.com/questions/54067192/vagrant-config-vm-provision-does-not-allow-me-to-copy-a-file-to-etc-nginx-conf
     # Copy cyberauto keys to guest machine
-    config.vm.provision "file", source: "../privkeys/id_rsa", destination: "/tmp/id_rsa"
+    config.vm.provision "file", source: "../prikeys/id_rsa", destination: "/tmp/id_rsa"
     config.vm.provision "file", source: "../pubkeys/id_rsa.pub", destination: "/tmp/id_rsa.pub"
-    config.vm.provision "file", source: "../pubkeys/dtran_id_rsa.pub", destination: "/tmp/dtran_id_rsa.pub"
+    #config.vm.provision "file", source: "../pubkeys/dtran_id_rsa.pub", destination: "/tmp/dtran_id_rsa.pub"
 
     # GUEST PROVISION WITH SHELL SCRIPT BOOTSTRAP.SH
     # https://www.vagrantup.com/docs/provisioning/basic_usage

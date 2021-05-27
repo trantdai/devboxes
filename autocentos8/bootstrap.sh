@@ -76,12 +76,22 @@ mkdir -p /home/cyberauto/.ssh
 mv /tmp/id_rsa /home/cyberauto/.ssh
 mv /tmp/id_rsa.pub /home/cyberauto/.ssh
 chmod 700 /home/cyberauto/.ssh
+chmod 644  /home/cyberauto/.ssh/id_rsa.pub
+chmod 600  /home/cyberauto/.ssh/id_rsa
+chmod 755 /home/cyberauto
 
 mkdir -p /home/cyberauto/pubkeys
-mv /tmp/dtran_id_rsa.pub /home/cyberauto/pubkeys
+#mv /tmp/dtran_id_rsa.pub /home/cyberauto/pubkeys
 cat /home/cyberauto/.ssh/id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
-cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
+#cat /home/cyberauto/pubkeys/dtran_id_rsa.pub >> /home/cyberauto/.ssh/authorized_keys
 chmod -R 600 /home/cyberauto/.ssh/authorized_keys
+
+# Change ownership of all files and directories recursively under
+# /home/cyberauto/.ssh directory to cyberauto
+sudo chown -R cyberauto:cyberauto /home/cyberauto
+
+sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
+systemctl restart sshd
 
 echo 'SETTING UP JENKINS USING DOCKER AND JENKINS CONFIGURATION AS CODE...'
 cd /home/cyberauto
