@@ -22,6 +22,7 @@ echo "END OF USER ADDITION..."
 #https://www.systutorials.com/changing-linux-users-password-in-one-command-line/
 echo $password | sudo passwd --stdin cyberauto
 echo $password | sudo passwd --stdin vagrant
+echo $password | sudo passwd --stdin root
 #passwd --expire cyberauto
 
  echo "ADDING USER TO SUDOERS AND DISABLE PASSWORD PROMT AND WHEEL GROUP..."
@@ -60,6 +61,21 @@ sudo chown -R cyberauto:cyberauto /home/cyberauto
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
 
+#https://www.golinuxcloud.com/run-script-at-startup-boot-without-cron-linux/
+#https://www.2daygeek.com/execute-run-linux-scripts-command-at-reboot-startup/
+echo 'RUNNING HELLO MESSAGE AT STARTUP...'
+cat <<-EOF! > /home/cyberauto/custom_startup.sh
+#!/bin/bash
+# Simple program to use for testing startup configurations
+# with systemd.
+#
+echo "###############################"
+echo "######### Hello DES! ########"
+echo "###############################"
+EOF!
+chmod +x /home/cyberauto/custom_startup.sh
+chmod +x /etc/rc.d/rc.local
+if [ -z "$(grep '/home/cyberauto/custom_startup.sh' /etc/rc.d/rc.local)" ]; then echo "/home/cyberauto/custom_startup.sh" >> /etc/rc.d/rc.local; fi;
 echo ""
 echo "*** END OF BOOTSTRAPPING SHELL ***"
 echo ""

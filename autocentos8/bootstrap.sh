@@ -56,6 +56,7 @@ if [ $(grep -c "^cyberauto:" /etc/passwd) -eq 0 ]; then useradd -d /home/cyberau
 #https://www.systutorials.com/changing-linux-users-password-in-one-command-line/
 echo $password | sudo passwd --stdin cyberauto
 echo $password | sudo passwd --stdin vagrant
+echo $password | sudo passwd --stdin root
 
  echo "ADDING USER TO SUDOERS AND DISABLE PASSWORD PROMT AND WHEEL GROUP..."
 # https://stackoverflow.com/questions/323957/how-do-i-edit-etc-sudoers-from-a-script
@@ -93,13 +94,25 @@ sudo chown -R cyberauto:cyberauto /home/cyberauto
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
 
-echo 'SETTING UP JENKINS USING DOCKER AND JENKINS CONFIGURATION AS CODE...'
+echo 'BUILDING DOCKER IMAGE USING JENKINS AS CODE...'
 cd /home/cyberauto
 git clone https://github.com/trantdai/jenkins.git
 cd jenkins
 docker build -t jenkins:jcasc .
+
+echo 'RUN JENKINS CONTAINER FOR THE FIRST TIME...'
 docker run --name jenkins --rm -p 8080:8080 --env JENKINS_ADMIN_ID=admin --env JENKINS_ADMIN_PASSWORD=$password jenkins:jcasc &
 
+#https://www.golinuxcloud.com/run-script-at-startup-boot-without-cron-linux/
+#https://www.2daygeek.com/execute-run-linux-scripts-command-at-reboot-startup/
+echo 'MAKING SURE JENKINS DOCKER CONTAINER RUN AUTOMATICALLY AT REBOOT...'
+cat <<-EOF! > /home/cyberauto/custom_startup.sh
+#!/bin/bash
+docker run --name jenkins --rm -p 8080:8080 --env JENKINS_ADMIN_ID=admin --env JENKINS_ADMIN_PASSWORD=$password jenkins:jcasc &
+EOF!
+chmod +x /home/cyberauto/custom_startup.sh
+chmod +x /etc/rc.d/rc.local
+if [ -z "$(grep '/home/cyberauto/custom_startup.sh' /etc/rc.d/rc.local)" ]; then echo "/home/cyberauto/custom_startup.sh" >> /etc/rc.d/rc.local; fi;
 echo ""
 echo "*** END OF BOOTSTRAPPING SHELL ***"
 echo ""
