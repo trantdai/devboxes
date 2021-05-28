@@ -8,6 +8,10 @@
 - Jenkins run within a Docker container automatically on autocentos8 VM
 
 # Release/1.1
- - Replaced the default password for users `root` to the one provided in `.passwd` (provided by user) automatically
- - Provisioned SSH key authentication automatically using the private key (provided by user) in `../prikeys` directory and public key (provided by user) in `../pubkeys`
- - Set directory and file permissions with `/home/cyberauto` appropriately
+- Provisioned SSH key authentication automatically using the private key (provided by user) in `../prikeys` directory and public key (provided by user) in `../pubkeys`
+- Set directory and file permissions with `/home/cyberauto` appropriately
+
+ # Release/1.2
+- Replaced the default password for users `root` to the one provided in `.passwd` (provided by user) automatically
+- Configured system to make sure Jenkins docker container runs automatically at startup or reboot
+- Set up common aliases in `.bashrc` of user `cyberauto`

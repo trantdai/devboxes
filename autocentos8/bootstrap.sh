@@ -94,6 +94,15 @@ sudo chown -R cyberauto:cyberauto /home/cyberauto
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
 
+echo 'ADDING COMMON ALIASES TO .BASHRC...'
+cat <<-EOF! >> /home/cyberauto/.bashrc
+alias ll="ls -la"
+alias auto="ssh cyberauto@10.0.0.10"
+alias des="ssh cyberauto@10.0.0.5"
+alias mgmt="ssh cyberauto@10.0.0.10"
+EOF!
+source /home/cyberauto/.bashrc
+
 echo 'BUILDING DOCKER IMAGE USING JENKINS AS CODE...'
 cd /home/cyberauto
 git clone https://github.com/trantdai/jenkins.git
@@ -105,7 +114,7 @@ docker run --name jenkins --rm -p 8080:8080 --env JENKINS_ADMIN_ID=admin --env J
 
 #https://www.golinuxcloud.com/run-script-at-startup-boot-without-cron-linux/
 #https://www.2daygeek.com/execute-run-linux-scripts-command-at-reboot-startup/
-echo 'MAKING SURE JENKINS DOCKER CONTAINER RUN AUTOMATICALLY AT REBOOT...'
+echo 'MAKING SURE JENKINS DOCKER CONTAINER RUN AUTOMATICALLY AT STARTUP...'
 cat <<-EOF! > /home/cyberauto/custom_startup.sh
 #!/bin/bash
 docker run --name jenkins --rm -p 8080:8080 --env JENKINS_ADMIN_ID=admin --env JENKINS_ADMIN_PASSWORD=$password jenkins:jcasc &

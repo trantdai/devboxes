@@ -80,9 +80,18 @@ sudo chown -R cyberauto:cyberauto /home/cyberauto
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 systemctl restart sshd
 
+echo 'ADDING COMMON ALIASES TO .BASHRC...'
+cat <<-EOF! >> /home/cyberauto/.bashrc
+alias ll="ls -la"
+alias auto="ssh cyberauto@10.0.0.10"
+alias des="ssh cyberauto@10.0.0.5"
+alias mgmt="ssh cyberauto@10.0.0.10"
+EOF!
+source /home/cyberauto/.bashrc
+
 #https://www.golinuxcloud.com/run-script-at-startup-boot-without-cron-linux/
 #https://www.2daygeek.com/execute-run-linux-scripts-command-at-reboot-startup/
-echo 'RUNNING HELLO MESSAGE AT STARTUP...'
+echo 'RUNNING HELLO SERVICE AT STARTUP...'
 cat <<-EOF! > /home/cyberauto/custom_startup.sh
 #!/bin/bash
 # Simple program to use for testing startup configurations
